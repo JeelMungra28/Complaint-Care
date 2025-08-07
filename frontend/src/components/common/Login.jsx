@@ -4,6 +4,7 @@ import {Link, useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Footer from './FooterC'
+import ThemeToggle from './ThemeToggle';
 
 const Login = () => {
    const navigate = useNavigate();
@@ -51,68 +52,94 @@ const Login = () => {
 
    return (
       <>
-         <Navbar bg="dark" variant="dark">
+         <Navbar className="modern-navbar" expand="lg">
             <Container>
-               <Navbar.Brand>ComplaintCare </Navbar.Brand>
-               <ul className="navbar-nav">
-                  <li className="nav-item mb-2">
-                     <Link to={'/'}
-                        className={`nav-link text-light `}
-                     >
-                        Home
-                     </Link>
-                  </li>
-                  {/* <li className="nav-item mb-2">
-                     <Link
-                        to={'/about'}
-                        className={`nav-link text-light `}
-                     >
-                        About
-                     </Link>
-                  </li> */}
-                  <li className="nav-item mb-2">
-                     <Link
-                     to={'/signup'}
-                        className={`nav-link text-light `}
-                     >
-                        SignUp
-                     </Link>
-                  </li>
-                  <li className="nav-item mb-2">
-                     <Link
-                     to={'/login'}
-                        className={`nav-link text-light `}
-                     >
-                        Login
-                     </Link>
-                  </li>
-               </ul>
+               <Navbar.Brand as={Link} to="/" className="navbar-brand">
+                  ComplaintCare
+               </Navbar.Brand>
+               <div className="d-flex align-items-center">
+                  <ul className="navbar-nav d-flex flex-row align-items-center">
+                     <li className="nav-item">
+                        <Link to="/" className="nav-link">
+                           Home
+                        </Link>
+                     </li>
+                     <li className="nav-item">
+                        <Link to="/signup" className="nav-link">
+                           SignUp
+                        </Link>
+                     </li>
+                     <li className="nav-item">
+                        <Link to="/login" className="nav-link active">
+                           Login
+                        </Link>
+                     </li>
+                  </ul>
+                  <ThemeToggle className="ms-3" />
+               </div>
             </Container>
          </Navbar>
-         <section className="vh-100 gradient-custom">
-            <div className="container py-5 h-100">
-               <div className="row d-flex justify-content-center align-items-center h-100">
+         <section className="min-vh-100 d-flex align-items-center justify-content-center py-5">
+            <div className="container">
+               <div className="row d-flex justify-content-center">
                   <div className="col-12 col-md-8 col-lg-6 col-xl-5">
-                     <div className="card bg-dark text-white">
-                        <div className="card-body p-5 text-center">
-                           <div className="mb-md-5 mt-md-4 pb-5">
-                              <h2 className="fw-bold mb-4">Login For Registering the Complaint</h2>
-                              <p className="text-white-50 mb-5">Please enter your Credentials!</p>
-                              <form onSubmit={handleSubmit}>
-                                 <div className="form-outline form-white mb-4">
-                                    <input type="email" name="email" value={user.email} onChange={handleChange} className="form-control form-control-lg" required />
-                                    <label className="form-label" htmlFor="email">Email</label>
-                                 </div>
-                                 <div className="form-outline form-white mb-4">
-                                    <input type="password" name="password" value={user.password} onChange={handleChange} className="form-control form-control-lg" autoComplete="off" required />
-                                    <label className="form-label" htmlFor="password">Password</label>
-                                 </div>
-
-                                 <button className="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
-                              </form>
+                     <div className="card-modern">
+                        <div className="p-5">
+                           <div className="text-center mb-5">
+                              <h2 className="fw-bold mb-4" style={{color: 'var(--text-primary)'}}>
+                                 Login For Registering the Complaint
+                              </h2>
+                              <p className="mb-4" style={{color: 'var(--text-muted)'}}>
+                                 Please enter your credentials to continue
+                              </p>
                            </div>
-                           <div>
-                              <p className="mb-0">Don't have an account? <Link to="/SignUp">SignUp</Link></p>
+                           <form onSubmit={handleSubmit}>
+                              <div className="mb-4">
+                                 <label className="form-label-modern" htmlFor="email">Email Address</label>
+                                 <input 
+                                    type="email" 
+                                    name="email" 
+                                    value={user.email} 
+                                    onChange={handleChange} 
+                                    className="form-control-modern w-100" 
+                                    placeholder="Enter your email"
+                                    required 
+                                 />
+                              </div>
+                              <div className="mb-4">
+                                 <label className="form-label-modern" htmlFor="password">Password</label>
+                                 <input 
+                                    type="password" 
+                                    name="password" 
+                                    value={user.password} 
+                                    onChange={handleChange} 
+                                    className="form-control-modern w-100" 
+                                    placeholder="Enter your password"
+                                    autoComplete="off" 
+                                    required 
+                                 />
+                              </div>
+
+                              <button className="btn-primary-custom w-100 mb-4" type="submit">
+                                 Login
+                              </button>
+                           </form>
+                           <div className="text-center">
+                              <p className="mb-0" style={{color: 'var(--text-secondary)'}}>
+                                 Don't have an account? {' '}
+                                 <Link 
+                                    to="/SignUp" 
+                                    style={{
+                                       color: 'var(--primary-color)', 
+                                       textDecoration: 'none',
+                                       fontWeight: '600'
+                                    }}
+                                    onMouseOver={(e) => e.target.style.textDecoration = 'underline'}
+                                    onMouseOut={(e) => e.target.style.textDecoration = 'none'}
+                                 >
+                                    SignUp
+                                 </Link>
+                              </p>
                            </div>
                         </div>
                      </div>

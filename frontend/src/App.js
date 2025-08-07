@@ -1,6 +1,7 @@
 import "./App.css";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "./contexts/ThemeContext";
 
 import HomePage from "./components/user/HomePage";
 import Login from "./components/common/Login";
@@ -16,29 +17,31 @@ import AgentInfo from "./components/admin/AgentInfo";
 function App() {
   const isLoggedIn = !!localStorage.getItem("user");
   return (
-    <div className="App">
-      <Router>
-        <Routes>
-          <Route exact path="/" element={<Home />} />
-          <Route path="/Login" element={<Login />} />
-          <Route path="/SignUp" element={<SignUp />} />
-          {isLoggedIn ? (
-            <>
-              <Route path="/AgentInfo" element={<AgentInfo />} />
-              <Route path="/AgentHome" element={<AgentHome />} />
-              <Route path="/UserInfo" element={<UserInfo />} />
-              <Route path="/AgentHome" element={<AgentHome />} />
-              <Route path="/AdminHome" element={<AdminHome />} />
-              <Route path="/Homepage" element={<HomePage />} />
-              <Route path="/Complaint" element={<Complaint />} />
-              <Route path="/Status" element={<Status />} />
-            </>
-          ) : (
-            <Route to="/Login" />
-          )}
-        </Routes>
-      </Router>
-    </div>
+    <ThemeProvider>
+      <div className="App fade-in">
+        <Router>
+          <Routes>
+            <Route exact path="/" element={<Home />} />
+            <Route path="/Login" element={<Login />} />
+            <Route path="/SignUp" element={<SignUp />} />
+            {isLoggedIn ? (
+              <>
+                <Route path="/AgentInfo" element={<AgentInfo />} />
+                <Route path="/AgentHome" element={<AgentHome />} />
+                <Route path="/UserInfo" element={<UserInfo />} />
+                <Route path="/AgentHome" element={<AgentHome />} />
+                <Route path="/AdminHome" element={<AdminHome />} />
+                <Route path="/Homepage" element={<HomePage />} />
+                <Route path="/Complaint" element={<Complaint />} />
+                <Route path="/Status" element={<Status />} />
+              </>
+            ) : (
+              <Route to="/Login" />
+            )}
+          </Routes>
+        </Router>
+      </div>
+    </ThemeProvider>
   );
 }
 
