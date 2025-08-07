@@ -20,22 +20,54 @@ const AgentHome = () => {
    const [userName, setUserName] = useState('');
    const [toggle, setToggle] = useState({})
    const [agentComplaintList, setAgentComplaintList] = useState([]);
+   const [loading, setLoading] = useState(true);
+   const [error, setError] = useState('');
 
    useEffect(() => {
       const getData = async () => {
          try {
+            setLoading(true);
+            setError('');
             const user = JSON.parse(localStorage.getItem('user'));
+            console.log('User from localStorage:', user);
             if (user) {
                const { _id, name } = user;
                setUserName(name);
-               const response = await axios.get(`http://localhost:8000/allcomplaints/${_id}`);
+               console.log('Fetching complaints for agent:', _id);
+
+               // Add timeout to the request
+               const response = await axios.get(`http://localhost:8000/allcomplaints/${_id}`, {
+                  timeout: 10000
+               });
+
+               console.log('API Response:', response);
+               console.log('Response data:', response.data);
                const complaints = response.data;
-               setAgentComplaintList(complaints);
+
+               if (Array.isArray(complaints)) {
+                  setAgentComplaintList(complaints);
+                  console.log(`Found ${complaints.length} complaints for agent`);
+               } else {
+                  console.error('Response is not an array:', complaints);
+                  setError('Invalid response format from server');
+               }
             } else {
+               console.log('No user found in localStorage, redirecting to login');
                navigate('/');
             }
          } catch (error) {
-            console.log(error);
+            console.error('Error fetching complaints:', error);
+            if (error.code === 'ECONNABORTED') {
+               setError('Request timeout - server may be down');
+            } else if (error.response) {
+               setError(`Server error: ${error.response.data?.error || error.response.statusText}`);
+            } else if (error.request) {
+               setError('Cannot connect to server - check if backend is running');
+            } else {
+               setError(`Request failed: ${error.message}`);
+            }
+         } finally {
+            setLoading(false);
          }
       };
 
@@ -47,11 +79,14 @@ const AgentHome = () => {
          await axios.put(`http://localhost:8000/complaint/${complaintId}`, { status: 'completed' });
          setAgentComplaintList((prevComplaints) =>
             prevComplaints.map((complaint) =>
-               complaint._doc.complaintId === complaintId ? { ...complaint, _doc: { ...complaint._doc, status: 'completed' } } : complaint
+               complaint.complaintId === complaintId
+                  ? { ...complaint, status: 'completed' }
+                  : complaint
             )
          );
       } catch (error) {
-         console.log(error);
+         console.error('Error updating complaint status:', error);
+         setError('Failed to update complaint status');
       }
    };
 
@@ -89,9 +124,22 @@ const AgentHome = () => {
                </Container>
             </Navbar>
             <div className="container" style={{ display: 'flex', flexWrap: 'wrap', margin: '20px' }}>
-               {agentComplaintList && agentComplaintList.length > 0 ? (
+               {loading ? (
+                  <Alert variant="info">
+                     <Alert.Heading>Loading complaints...</Alert.Heading>
+                  </Alert>
+               ) : error ? (
+                  <Alert variant="danger">
+                     <Alert.Heading>Error</Alert.Heading>
+                     <p>{error}</p>
+                     <Button variant="outline-danger" onClick={() => window.location.reload()}>
+                        Retry
+                     </Button>
+                  </Alert>
+               ) : agentComplaintList && agentComplaintList.length > 0 ? (
                   agentComplaintList.map((complaint, index) => {
-                     const open = toggle[complaint._doc.complaintId] || false;
+                     const open = toggle[complaint.complaintId] || false;
+
                      return (
                         <Card key={index} style={{ width: '18rem', margin: '15px' }}>
                            <Card.Body>
@@ -101,23 +149,27 @@ const AgentHome = () => {
                               <Card.Text><b>State:</b> {complaint.state}</Card.Text>
                               <Card.Text><b>Pincode:</b> {complaint.pincode}</Card.Text>
                               <Card.Text><b>Comment:</b> {complaint.comment}</Card.Text>
-                              <Card.Text><b>Status:</b> {complaint._doc.status}</Card.Text>
+                              <Card.Text><b>Status:</b>
+                                 <span className={complaint.status === 'completed' ? 'text-success fw-bold' : 'text-warning fw-bold'}>
+                                    {complaint.status.charAt(0).toUpperCase() + complaint.status.slice(1)}
+                                 </span>
+                              </Card.Text>
 
                               {complaint.status !== 'completed' && (
-                                 <Button onClick={() => handleStatusChange(complaint._doc.complaintId)} variant="primary">
-                                    Status Change
+                                 <Button onClick={() => handleStatusChange(complaint.complaintId)} variant="success" size="sm" className="me-2">
+                                    Mark Completed
                                  </Button>
                               )}
-                              <Button onClick={() => handleToggle(complaint._doc.complaintId)}
-                                 aria-controls={`collapse-${complaint._doc.complaintId}`}
-                                 aria-expanded={!open} className='mx-3' variant="primary">
-                                 Message
+                              <Button onClick={() => handleToggle(complaint.complaintId)}
+                                 aria-controls={`collapse-${complaint.complaintId}`}
+                                 aria-expanded={!open} variant="primary" size="sm">
+                                 {open ? 'Hide Chat' : 'Show Chat'}
                               </Button>
                               <div>
                                  <Collapse in={!open} dimension="width">
                                     <div id="example-collapse-text">
                                        <Card body style={{ width: '250px', marginTop: '12px' }}>
-                                          <ChatWindow key={complaint._doc.complaintId} complaintId={complaint._doc.complaintId} name={userName} />
+                                          <ChatWindow key={complaint.complaintId} complaintId={complaint.complaintId} name={userName} />
                                        </Card>
                                     </div>
                                  </Collapse>
@@ -129,12 +181,13 @@ const AgentHome = () => {
                   })
                ) : (
                   <Alert variant="info">
-                     <Alert.Heading>No complaints to show</Alert.Heading>
+                     <Alert.Heading>No complaints assigned</Alert.Heading>
+                     <p>You don't have any complaints assigned to you at the moment.</p>
                   </Alert>
                )}
             </div>
          </div>
-         <Footer style={style}/>
+         <Footer style={style} />
       </>
    );
 };

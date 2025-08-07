@@ -210,7 +210,14 @@ app.post("/assignedComplaints", (req, res) => {
 app.get("/allcomplaints/:agentId", async (req, res) => {
   try {
     const agentId = req.params.agentId;
+    console.log(`Fetching complaints for agent: ${agentId}`);
+
     const complaints = await AssignedComplaint.find({ agentId: agentId });
+    console.log(`Found ${complaints.length} assigned complaints`);
+
+    if (complaints.length === 0) {
+      return res.json([]);
+    }
 
     // Fetch all complaintIds from the complaints
     const complaintIds = complaints.map((complaint) => complaint.complaintId);
@@ -220,25 +227,33 @@ app.get("/allcomplaints/:agentId", async (req, res) => {
       _id: { $in: complaintIds },
     });
 
-    // Merge the complaint details into the complaints array
+    console.log(`Found ${complaintDetails.length} complaint details`);
+
+    // Merge the complaint details into the complaints array with clean structure
     const updatedComplaints = complaints.map((complaint) => {
       const complaintDetail = complaintDetails.find(
         (detail) => detail._id.toString() === complaint.complaintId.toString()
       );
+
+      // Return a clean, flat structure
       return {
-        ...complaint,
-        name: complaintDetail.name,
-        city: complaintDetail.city,
-        state: complaintDetail.state,
-        address: complaintDetail.address,
-        pincode: complaintDetail.pincode,
-        comment: complaintDetail.comment,
+        complaintId: complaint.complaintId,
+        agentId: complaint.agentId,
+        status: complaint.status || "pending",
+        name: complaintDetail?.name || "Unknown",
+        city: complaintDetail?.city || "Unknown",
+        state: complaintDetail?.state || "Unknown",
+        address: complaintDetail?.address || "Unknown",
+        pincode: complaintDetail?.pincode || "Unknown",
+        comment: complaintDetail?.comment || "No comment",
+        createdAt: complaint.createdAt,
+        updatedAt: complaint.updatedAt,
       };
     });
 
     res.json(updatedComplaints);
   } catch (error) {
-    console.log(error);
+    console.error("Error fetching complaints:", error);
     res.status(500).json({ error: "Failed to get complaints" });
   }
 });
@@ -279,7 +294,7 @@ app.put("/complaint/:complaintId", async (req, res) => {
     );
 
     const assigned = await AssignedComplaint.findOneAndUpdate(
-      {complaintId: complaintId},
+      { complaintId: complaintId },
       { status },
       { new: true }
     );
@@ -291,6 +306,29 @@ app.put("/complaint/:complaintId", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Failed to update complaint" });
+  }
+});
+
+// Debug endpoint to check database state
+app.get("/debug/assigned-complaints", async (req, res) => {
+  try {
+    const assignedComplaints = await AssignedComplaint.find({});
+    const complaints = await ComplaintSchema.find({});
+    const users = await UserSchema.find({});
+
+    res.json({
+      assignedComplaints: assignedComplaints.length,
+      complaints: complaints.length,
+      agents: users.filter((u) => u.userType === "agent").length,
+      data: {
+        assignedComplaints: assignedComplaints.slice(0, 3), // Show first 3
+        complaints: complaints.slice(0, 3),
+        agents: users.filter((u) => u.userType === "agent").slice(0, 3),
+      },
+    });
+  } catch (error) {
+    console.error("Debug error:", error);
+    res.status(500).json({ error: "Debug failed" });
   }
 });
 
