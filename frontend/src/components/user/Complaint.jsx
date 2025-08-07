@@ -10,7 +10,7 @@ const Complaint = () => {
       city: '',
       state: '',
       pincode: '',
-      status: '',
+      status: 'pending',
       comment: ''
    })
 
@@ -21,13 +21,13 @@ const Complaint = () => {
 
    const handleClear = () => {
       setUserComplaint({
-         userId: '',
+         userId: user._id,
          name: '',
          address: '',
          city: '',
          state: '',
          pincode: '',
-         status: '',
+         status: 'pending',
          comment: ''
       })
    }
@@ -39,61 +39,154 @@ const Complaint = () => {
       axios.post(`http://localhost:8000/Complaint/${_id}`, userComplaint)
          .then(res => {
             JSON.stringify(res.data.userComplaint)
-            alert("Your Complaint has been send!!")
+            alert("Your complaint has been submitted successfully!")
             handleClear()
          })
          .catch(err => {
             console.log(err)
-            alert("Something went wrong!!")
+            alert("Something went wrong. Please try again.")
          })
    }
+
    return (
       <>
-         <div className="text-white complaint-box">
-            <form onSubmit={handleSubmit} className="compliant-form row bg-dark ">
+         <div className="container py-4">
+            <div className="row justify-content-center">
+               <div className="col-12 col-lg-10">
+                  <div className="card-modern">
+                     <div className="p-4">
+                        <div className="text-center mb-4">
+                           <h2 className="fw-bold mb-3" style={{color: 'var(--text-primary)'}}>
+                              Register Your Complaint
+                           </h2>
+                           <p style={{color: 'var(--text-muted)'}}>
+                              Please provide detailed information about your complaint
+                           </p>
+                        </div>
+                        
+                        <form onSubmit={handleSubmit} className="row">
+                           <div className="col-md-6 mb-3">
+                              <label className="form-label-modern" htmlFor="name">Full Name</label>
+                              <input 
+                                 name="name" 
+                                 onChange={handleChange} 
+                                 value={userComplaint.name} 
+                                 type="text" 
+                                 className="form-control-modern w-100" 
+                                 id="name"
+                                 placeholder="Enter your full name"
+                                 required 
+                              />
+                           </div>
+                           <div className="col-md-6 mb-3">
+                              <label className="form-label-modern" htmlFor="address">Address</label>
+                              <input 
+                                 name="address" 
+                                 onChange={handleChange} 
+                                 value={userComplaint.address} 
+                                 type="text" 
+                                 className="form-control-modern w-100" 
+                                 id="address"
+                                 placeholder="Enter your address"
+                                 required 
+                              />
+                           </div>
 
-               <div className="col-md-6 p-3 p-3">
-                  <label htmlFor="name" className="form-label">Name</label>
-                  <input name="name" onChange={handleChange} value={userComplaint.name} type="text" className="form-control" id="name" required />
-               </div>
-               <div className="col-md-6 p-3">
-                  <label htmlFor="address" className="form-label">Address</label>
-                  <input name="address" onChange={handleChange} value={userComplaint.address} type="text" className="form-control" id="address" required />
-               </div>
+                           <div className="col-md-6 mb-3">
+                              <label className="form-label-modern" htmlFor="city">City</label>
+                              <input 
+                                 name="city" 
+                                 onChange={handleChange} 
+                                 value={userComplaint.city} 
+                                 type="text" 
+                                 className="form-control-modern w-100" 
+                                 id="city"
+                                 placeholder="Enter your city"
+                                 required 
+                              />
+                           </div>
+                           <div className="col-md-6 mb-3">
+                              <label className="form-label-modern" htmlFor="state">State</label>
+                              <input 
+                                 name="state" 
+                                 onChange={handleChange} 
+                                 value={userComplaint.state} 
+                                 type="text" 
+                                 className="form-control-modern w-100" 
+                                 id="state"
+                                 placeholder="Enter your state"
+                                 required 
+                              />
+                           </div>
 
-               <div className="col-md-6 p-3">
-                  <label htmlFor="city" className="form-label">City</label>
-                  <input name="city" onChange={handleChange} value={userComplaint.city} type="text" className="form-control" id="city" required />
-               </div>
-               <div className="col-md-6 p-3">
-                  <label htmlFor="state" className="form-label">State</label>
-                  <input name="state" onChange={handleChange} value={userComplaint.state} type="text" className="form-control" id="state" required />
-               </div>
+                           <div className="col-md-6 mb-3">
+                              <label className="form-label-modern" htmlFor="pincode">Pincode</label>
+                              <input 
+                                 name="pincode" 
+                                 onChange={handleChange} 
+                                 value={userComplaint.pincode} 
+                                 type="text" 
+                                 className="form-control-modern w-100" 
+                                 id="pincode"
+                                 placeholder="Enter pincode"
+                                 required 
+                              />
+                           </div>
 
-               <div className="col-md-6 p-3">
-                  <label htmlFor="pincode" className="form-label">Pincode</label>
-                  <input name="pincode" onChange={handleChange} value={userComplaint.pincode} type="text" className="form-control" id="pincode" required />
-               </div>
-               
-               {/* <div className="col-md-6 p-3">
-                  <label htmlFor="file" className="form-label">Document</label>
-                  <input name="file" type="file" className="form-control" id="file" required />
-               </div> */}
+                           <div className="col-md-6 mb-3">
+                              <label className="form-label-modern" htmlFor="status">Status</label>
+                              <input 
+                                 name="status" 
+                                 onChange={handleChange} 
+                                 value={userComplaint.status} 
+                                 type="text" 
+                                 className="form-control-modern w-100" 
+                                 id="status"
+                                 placeholder="Default: pending"
+                                 readOnly
+                                 style={{background: 'var(--bg-tertiary)', cursor: 'not-allowed'}}
+                              />
+                           </div>
 
-               <div className="col-md-6 p-3">
-                  <label htmlFor="status" className="form-label">Status</label>
-                  <input placeholder='type pending' name="status" onChange={handleChange} value={userComplaint.status} type="text" className="form-control" id="pincode" required />
+                           <div className="col-12 mb-4">
+                              <label className="form-label-modern" htmlFor="comment">Complaint Description</label>
+                              <textarea 
+                                 name="comment" 
+                                 onChange={handleChange} 
+                                 value={userComplaint.comment} 
+                                 className="form-control-modern w-100"
+                                 id="comment"
+                                 rows="4"
+                                 placeholder="Please describe your complaint in detail..."
+                                 required
+                                 style={{resize: 'vertical', minHeight: '120px'}}
+                              />
+                           </div>
+                           
+                           <div className="col-12 text-center">
+                              <div className="d-flex justify-content-center gap-3">
+                                 <button 
+                                    type="button" 
+                                    onClick={handleClear}
+                                    className="btn-outline-custom"
+                                    style={{minWidth: '120px'}}
+                                 >
+                                    Clear Form
+                                 </button>
+                                 <button 
+                                    type="submit" 
+                                    className="btn-primary-custom"
+                                    style={{minWidth: '120px'}}
+                                 >
+                                    Submit Complaint
+                                 </button>
+                              </div>
+                           </div>
+                        </form>
+                     </div>
+                  </div>
                </div>
-
-
-               <label className=" p-3form-label text-light" htmlFor="comment">Descrption</label>
-               <div className="form-floating">
-                  <textarea name="comment" onChange={handleChange} value={userComplaint.comment} className="form-control" required></textarea>
-               </div>
-               <div className="text-center p-1 col-12">
-                  <button type="submit" onClick={handleSubmit} className="mt-2 btn btn-success">Register</button>
-               </div>
-            </form>
+            </div>
          </div>
       </>
    )
