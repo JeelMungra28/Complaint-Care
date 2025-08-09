@@ -167,9 +167,11 @@ This project is licensed under the ISC License - see the LICENSE file for detail
 
 👨‍💻 Author
 Jeel Mungra
+Team Id: PNT2025TMID10608
 
 GitHub: @JeelMungra28
 🙏 Acknowledgments
+Thanks to SmartBridge For Guiding This Project 
 React community for excellent documentation
 Bootstrap team for the responsive framework
 MongoDB for reliable database solution
