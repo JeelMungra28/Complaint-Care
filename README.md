@@ -69,3 +69,110 @@ A comprehensive complaint management system that allows users to register compla
 - **bcrypt** - Password Hashing
 - **CORS** - Cross-Origin Resource Sharing
 
+
+## 🚀 Installation
+
+### Prerequisites
+- Node.js (v14 or higher)
+- MongoDB
+- npm or yarn
+
+### Clone the Repository
+```bash
+git clone https://github.com/JeelMungra28/Complaint-Care.git
+cd Complaint-Care
+
+# Navigate to backend directory
+cd backend
+
+# Install dependencies
+npm install
+
+# Create .env file
+cp .env.example .env
+
+# Configure environment variables
+# Add your MongoDB URI, session secret, OAuth credentials, etc.
+
+# Start the backend server
+npm start
+
+# Navigate to frontend directory (in a new terminal)
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start the React development server
+npm start
+
+💻 Usage
+Start the Backend Server (Port 8000)
+
+bash
+cd backend && npm start
+Start the Frontend Application (Port 3000)
+
+bash
+cd frontend && npm start
+Access the Application
+
+Frontend: http://localhost:3000
+Backend API: http://localhost:8000
+Default User Roles
+Admin: Full system access and management
+Agent: Complaint resolution and status updates
+User: Submit and track complaints
+🌐 API Endpoints
+Authentication
+POST /auth/login - User login
+POST /auth/register - User registration
+GET /auth/google - Google OAuth
+GET /auth/microsoft - Microsoft OAuth
+Users
+GET /OrdinaryUsers - Get all ordinary users
+PUT /user/:id - Update user details
+DELETE /OrdinaryUsers/:id - Delete user
+Agents
+GET /agentUsers - Get all agents
+GET /AgentUsers/:id - Get specific agent
+Complaints
+GET /status - Get all complaints
+POST /assignedComplaints - Assign complaint to agent
+PUT /complaint/:id - Update complaint status
+📱 Key Features
+User Dashboard
+Submit new complaints
+Track complaint status
+View complaint history
+Update profile information
+Agent Dashboard
+View assigned complaints
+Update complaint status
+Add resolution notes
+Manage workload
+Admin Dashboard
+System overview and statistics
+User and agent management
+Complaint assignment and tracking
+Reports and analytics
+🤝 Contributing
+Fork the repository
+Create a feature branch (git checkout -b feature/AmazingFeature)
+Commit your changes (git commit -m 'Add some AmazingFeature')
+Push to the branch (git push origin feature/AmazingFeature)
+Open a Pull Request
+📄 License
+This project is licensed under the ISC License - see the LICENSE file for details.
+
+👨‍💻 Author
+Jeel Mungra
+
+GitHub: @JeelMungra28
+🙏 Acknowledgments
+React community for excellent documentation
+Bootstrap team for the responsive framework
+MongoDB for reliable database solution
+All contributors who helped improve this project
+
+
