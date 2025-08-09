@@ -4,7 +4,7 @@ const session = require("express-session");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const MicrosoftStrategy = require("passport-microsoft").Strategy;
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 require("dotenv").config();
 require("./config");
 const {
@@ -16,8 +16,12 @@ const {
 const app = express();
 const PORT = process.env.PORT || 8000;
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
-const GOOGLE_ENABLED = Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);
-const MS_ENABLED = Boolean(process.env.MICROSOFT_CLIENT_ID && process.env.MICROSOFT_CLIENT_SECRET);
+const GOOGLE_ENABLED = Boolean(
+  process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+);
+const MS_ENABLED = Boolean(
+  process.env.MICROSOFT_CLIENT_ID && process.env.MICROSOFT_CLIENT_SECRET
+);
 
 /**************************************** */
 app.use(express.json());
@@ -64,19 +68,25 @@ if (GOOGLE_ENABLED) {
       {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: process.env.GOOGLE_CALLBACK_URL || "http://localhost:8000/auth/google/callback",
+        callbackURL:
+          process.env.GOOGLE_CALLBACK_URL ||
+          "http://localhost:8000/auth/google/callback",
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          const email = profile.emails && profile.emails[0] && profile.emails[0].value;
-          let user = await UserSchema.findOne({ $or: [{ googleId: profile.id }, { email }] });
+          const email =
+            profile.emails && profile.emails[0] && profile.emails[0].value;
+          let user = await UserSchema.findOne({
+            $or: [{ googleId: profile.id }, { email }],
+          });
           if (!user) {
             user = await UserSchema.create({
               name: profile.displayName || "Google User",
               email: email || `unknown-${profile.id}@google.local`,
               userType: "Ordinary",
               googleId: profile.id,
-              avatar: profile.photos && profile.photos[0] && profile.photos[0].value,
+              avatar:
+                profile.photos && profile.photos[0] && profile.photos[0].value,
             });
           } else if (!user.googleId) {
             user.googleId = profile.id;
@@ -98,20 +108,26 @@ if (MS_ENABLED) {
       {
         clientID: process.env.MICROSOFT_CLIENT_ID,
         clientSecret: process.env.MICROSOFT_CLIENT_SECRET,
-        callbackURL: process.env.MICROSOFT_CALLBACK_URL || "http://localhost:8000/auth/microsoft/callback",
+        callbackURL:
+          process.env.MICROSOFT_CALLBACK_URL ||
+          "http://localhost:8000/auth/microsoft/callback",
         scope: ["user.read"],
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          const email = profile.emails && profile.emails[0] && profile.emails[0].value;
-          let user = await UserSchema.findOne({ $or: [{ microsoftId: profile.id }, { email }] });
+          const email =
+            profile.emails && profile.emails[0] && profile.emails[0].value;
+          let user = await UserSchema.findOne({
+            $or: [{ microsoftId: profile.id }, { email }],
+          });
           if (!user) {
             user = await UserSchema.create({
               name: profile.displayName || "Microsoft User",
               email: email || `unknown-${profile.id}@microsoft.local`,
               userType: "Ordinary",
               microsoftId: profile.id,
-              avatar: profile.photos && profile.photos[0] && profile.photos[0].value,
+              avatar:
+                profile.photos && profile.photos[0] && profile.photos[0].value,
             });
           } else if (!user.microsoftId) {
             user.microsoftId = profile.id;
@@ -142,15 +158,22 @@ function redirectWithUser(res, user) {
 
 // Auth routes
 if (GOOGLE_ENABLED) {
-  app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+  app.get(
+    "/auth/google",
+    passport.authenticate("google", { scope: ["profile", "email"] })
+  );
   app.get(
     "/auth/google/callback",
     passport.authenticate("google", { failureRedirect: "/auth/failure" }),
     (req, res) => redirectWithUser(res, req.user)
   );
 } else {
-  app.get("/auth/google", (req, res) => res.status(501).json({ message: "Google auth not configured" }));
-  app.get("/auth/google/callback", (req, res) => res.status(501).json({ message: "Google auth not configured" }));
+  app.get("/auth/google", (req, res) =>
+    res.status(501).json({ message: "Google auth not configured" })
+  );
+  app.get("/auth/google/callback", (req, res) =>
+    res.status(501).json({ message: "Google auth not configured" })
+  );
 }
 
 if (MS_ENABLED) {
@@ -161,11 +184,17 @@ if (MS_ENABLED) {
     (req, res) => redirectWithUser(res, req.user)
   );
 } else {
-  app.get("/auth/microsoft", (req, res) => res.status(501).json({ message: "Microsoft auth not configured" }));
-  app.get("/auth/microsoft/callback", (req, res) => res.status(501).json({ message: "Microsoft auth not configured" }));
+  app.get("/auth/microsoft", (req, res) =>
+    res.status(501).json({ message: "Microsoft auth not configured" })
+  );
+  app.get("/auth/microsoft/callback", (req, res) =>
+    res.status(501).json({ message: "Microsoft auth not configured" })
+  );
 }
 
-app.get("/auth/failure", (req, res) => res.status(401).send("Authentication failed"));
+app.get("/auth/failure", (req, res) =>
+  res.status(401).send("Authentication failed")
+);
 app.post("/auth/logout", (req, res) => {
   req.logout?.(() => {});
   req.session?.destroy(() => {});
@@ -211,7 +240,9 @@ app.post("/SignUp", async (req, res) => {
     if (existing) {
       return res.status(409).json({ message: "User already exists" });
     }
-    const hashedPassword = password ? await bcrypt.hash(password, 10) : undefined;
+    const hashedPassword = password
+      ? await bcrypt.hash(password, 10)
+      : undefined;
     const user = await UserSchema.create({
       name,
       email,
@@ -233,7 +264,12 @@ app.post("/Login", async (req, res) => {
     return res.status(401).json({ message: "User doesn`t exists" });
   }
   if (!user.password) {
-    return res.status(400).json({ message: "Password login not available for this account. Use social login." });
+    return res
+      .status(400)
+      .json({
+        message:
+          "Password login not available for this account. Use social login.",
+      });
   }
   const isValid = await bcrypt.compare(password, user.password || "");
   if (isValid) {
