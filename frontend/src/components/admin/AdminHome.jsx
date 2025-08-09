@@ -8,6 +8,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import UserInfo from './UserInfo';
 import AccordionAdmin from "./AccordionAdmin";
 import AgentInfo from './AgentInfo';
+import DashboardStats from './DashboardStats';
 
 const AdminHome = () => {
    const navigate = useNavigate();
@@ -46,43 +47,63 @@ const AdminHome = () => {
 
    return (
       <>
-         <Navbar className="text-white" bg="dark" expand="lg">
+         <Navbar className="shadow-sm" bg="dark" variant="dark" expand="lg" sticky="top">
             <Container fluid>
-               <Navbar.Brand className="text-white" href="#">
-                  Hi Admin {userName}
+               <Navbar.Brand className="fw-bold">
+                  <i className="bi bi-shield-check me-2"></i>
+                  Complaint Care Admin
                </Navbar.Brand>
                <Navbar.Toggle aria-controls="navbarScroll" />
                <Navbar.Collapse id="navbarScroll">
-                  <Nav className="text-white me-auto my-2 my-lg-0" style={{ maxHeight: '100px' }} navbarScroll>
-                     <NavLink
-                        className={`nav-link text-light ${activeComponent === 'dashboard' ? 'active' : ''}`}
+                  <Nav className="me-auto my-2 my-lg-0" navbarScroll>
+                     <Nav.Link
+                        className={`px-3 ${activeComponent === 'dashboard' ? 'active fw-bold' : ''}`}
                         onClick={() => handleNavLinkClick('dashboard')}
+                        style={{ cursor: 'pointer' }}
                      >
-                        Dashboard
-                     </NavLink>
-                     <NavLink
-                        className={`nav-link text-light ${activeComponent === 'UserInfo' ? 'active' : ''}`}
+                        <i className="bi bi-speedometer2 me-1"></i> Dashboard
+                     </Nav.Link>
+                     <Nav.Link
+                        className={`px-3 ${activeComponent === 'complaints' ? 'active fw-bold' : ''}`}
+                        onClick={() => handleNavLinkClick('complaints')}
+                        style={{ cursor: 'pointer' }}
+                     >
+                        <i className="bi bi-clipboard-data me-1"></i> Complaints
+                     </Nav.Link>
+                     <Nav.Link
+                        className={`px-3 ${activeComponent === 'UserInfo' ? 'active fw-bold' : ''}`}
                         onClick={() => handleNavLinkClick('UserInfo')}
+                        style={{ cursor: 'pointer' }}
                      >
-                        User
-                     </NavLink>
-                     <NavLink
-                        className={`nav-link text-light ${activeComponent === 'Agent' ? 'active' : ''}`}
+                        <i className="bi bi-people me-1"></i> Users
+                     </Nav.Link>
+                     <Nav.Link
+                        className={`px-3 ${activeComponent === 'Agent' ? 'active fw-bold' : ''}`}
                         onClick={() => handleNavLinkClick('Agent')}
+                        style={{ cursor: 'pointer' }}
                      >
-                        Agent
-                     </NavLink>
+                        <i className="bi bi-person-gear me-1"></i> Agents
+                     </Nav.Link>
                   </Nav>
-                  <Button onClick={LogOut} variant="outline-danger">
-                     Log out
-                  </Button>
+                  <div className="d-flex align-items-center">
+                     <span className="text-light me-3">
+                        <i className="bi bi-person-circle me-1"></i>
+                        Welcome, {userName}
+                     </span>
+                     <Button onClick={LogOut} variant="outline-light" size="sm">
+                        <i className="bi bi-box-arrow-right me-1"></i>
+                        Logout
+                     </Button>
+                  </div>
                </Navbar.Collapse>
             </Container>
          </Navbar>
-         <div className="content">
-            {activeComponent === 'Agent' ? <AgentInfo /> : null}
-            {activeComponent === 'dashboard' ? <AccordionAdmin /> : null}
-            {activeComponent === 'UserInfo' ? <UserInfo /> : null}
+         
+         <div className="content" style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
+            {activeComponent === 'dashboard' && <DashboardStats />}
+            {activeComponent === 'complaints' && <AccordionAdmin />}
+            {activeComponent === 'Agent' && <AgentInfo />}
+            {activeComponent === 'UserInfo' && <UserInfo />}
          </div>
       </>
    )
