@@ -40,8 +40,12 @@ const Login = () => {
 };
 
 const handleSocialLogin = (provider) => {
-   alert(`${provider} login integration would be implemented here. For demo purposes, redirecting to home page.`);
-   navigate('/');
+   const base = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
+   if (provider === 'Google') {
+      window.location.href = `${base}/auth/google`;
+   } else if (provider === 'Microsoft') {
+      window.location.href = `${base}/auth/microsoft`;
+   }
 };
 
 const handleChange = (e) => {
@@ -94,12 +98,29 @@ const handleSubmit = async (e) => {
    }
 };
 
+React.useEffect(() => {
+   try {
+      const params = new URLSearchParams(window.location.search);
+      const encoded = params.get('user');
+      if (encoded) {
+         const json = JSON.parse(atob(encoded));
+         localStorage.setItem('user', JSON.stringify(json));
+         const { userType } = json || {};
+         const next = userType === 'Admin' ? '/AdminHome' : userType === 'Agent' ? '/AgentHome' : '/HomePage';
+         window.history.replaceState({}, document.title, window.location.pathname);
+         navigate(next);
+      }
+   } catch (e) {
+      // ignore parse errors
+   }
+}, [navigate]);
+
 return (
    <>
       <Navbar className="modern-navbar" expand="lg">
          <Container>
-            <Navbar.Brand as={Link} to="/" className="navbar-brand animated-brand">
-               <span className="brand-icon">🛡️</span>
+            <Navbar.Brand as={Link} to="/" className="navbar-brand">
+               <span>🛡️</span>
                ComplaintCare
             </Navbar.Brand>
             <div className="navbar-content">
@@ -157,14 +178,7 @@ return (
                                  <span className="social-icon">🔍</span>
                                  Continue with Google
                               </button>
-                              <button
-                                 type="button"
-                                 className="social-btn apple-btn"
-                                 onClick={() => handleSocialLogin('Apple')}
-                              >
-                                 <span className="social-icon">🍎</span>
-                                 Continue with Apple
-                              </button>
+                         
                               <button
                                  type="button"
                                  className="social-btn microsoft-btn"

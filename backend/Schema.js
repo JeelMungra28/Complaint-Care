@@ -2,16 +2,21 @@ const mongoose = require("mongoose");
 // const bcrypt = require("bcrypt");
 
 /////////////////user///////////////////////////////
-const userSchema = mongoose.Schema({
-  name: { type: String, required: 'Name is require' },
-  email: { type: String, required: 'Email is require' },
-  password: { type: String, required: 'Password is require' },
-  phone: { type: Number, required: 'Phone is require' }, 
-  userType: { type: String, required: 'UserType is require' },
-},
-{
-  timestamps: true,
-});
+const userSchema = mongoose.Schema(
+  {
+    name: { type: String, required: 'Name is require' },
+    email: { type: String, required: 'Email is require', unique: true },
+    password: { type: String },
+    phone: { type: String },
+    userType: { type: String, default: 'Ordinary' },
+    googleId: { type: String },
+    microsoftId: { type: String },
+    avatar: { type: String },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 // userSchema.pre("save", async function (next) {
 //   try {

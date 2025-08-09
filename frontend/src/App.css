@@ -165,7 +165,7 @@
 }
 
 .animated-brand {
-  animation: brandPulse 2s infinite alternate;
+  animation: none;
 }
 
 .brand-icon {
@@ -1162,7 +1162,6 @@ span {
   z-index: 1;
   backdrop-filter: blur(10px);
   border: 1px solid var(--border-color);
-  animation: authCardFloat 6s ease-in-out infinite;
 }
 
 @keyframes authCardFloat {
@@ -1185,7 +1184,6 @@ span {
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: authIconPulse 2s ease-in-out infinite;
 }
 
 @keyframes authIconPulse {
@@ -1214,7 +1212,6 @@ span {
 }
 
 .auth-form {
-  animation: formSlideIn 0.8s ease forwards;
 }
 
 @keyframes formSlideIn {
@@ -1355,7 +1352,6 @@ span {
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  animation: errorSlideIn 0.3s ease;
 }
 
 @keyframes errorSlideIn {
@@ -1379,7 +1375,6 @@ span {
   border-radius: var(--radius-md);
   border: 1px solid;
   margin-bottom: 1rem;
-  animation: alertSlideIn 0.5s ease;
 }
 
 @keyframes alertSlideIn {

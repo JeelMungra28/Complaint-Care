@@ -101,9 +101,13 @@ const SignUp = () => {
       return Object.keys(newErrors).length === 0;
    };
 
-   const handleSocialSignup = (provider) => {
-      alert(`${provider} signup integration would be implemented here. For demo purposes, redirecting to home page.`);
-      navigate('/');
+const handleSocialSignup = (provider) => {
+      const base = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
+      if (provider === 'Google') {
+         window.location.href = `${base}/auth/google`;
+      } else if (provider === 'Microsoft') {
+         window.location.href = `${base}/auth/microsoft`;
+      }
    };
 
    const handleChange = (e) => {
@@ -162,8 +166,8 @@ const SignUp = () => {
       <>
          <Navbar className="modern-navbar" expand="lg">
             <Container>
-               <Navbar.Brand as={Link} to="/" className="navbar-brand animated-brand">
-                  <span className="brand-icon">🛡️</span>
+               <Navbar.Brand as={Link} to="/" className="navbar-brand">
+                  <span>🛡️</span>
                   ComplaintCare
                </Navbar.Brand>
                <div className="navbar-content">
@@ -221,14 +225,7 @@ const SignUp = () => {
                                     <span className="social-icon">🔍</span>
                                     Sign up with Google
                                  </button>
-                                 <button
-                                    type="button"
-                                    className="social-btn apple-btn"
-                                    onClick={() => handleSocialSignup('Apple')}
-                                 >
-                                    <span className="social-icon">🍎</span>
-                                    Sign up with Apple
-                                 </button>
+                                   
                                  <button
                                     type="button"
                                     className="social-btn microsoft-btn"

@@ -55,26 +55,22 @@ const Home = () => {
          <Navbar className="modern-navbar" expand="lg">
             <Container>
                <Navbar.Brand as={Link} to="/" className="navbar-brand animated-brand">
-                  <span className="brand-icon">🛡️</span>
                   ComplaintCare
                </Navbar.Brand>
                <div className="navbar-content">
                   <ul className="navbar-nav d-flex flex-row align-items-center">
                      <li className="nav-item">
-                        <Link to="/" className="nav-link">
-                           <span className="nav-icon">🏠</span>
+                        <Link to="/" className="nav-link"> 
                            Home
                         </Link>
                      </li>
                      <li className="nav-item">
                         <Link to="/signup" className="nav-link">
-                           <span className="nav-icon">👤</span>
                            SignUp
                         </Link>
                      </li>
                      <li className="nav-item">
                         <Link to="/login" className="nav-link">
-                           <span className="nav-icon">🔐</span>
                            Login
                         </Link>
                      </li>
