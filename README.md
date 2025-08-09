@@ -69,5 +69,3 @@ A comprehensive complaint management system that allows users to register compla
 - **bcrypt** - Password Hashing
 - **CORS** - Cross-Origin Resource Sharing
 
-## 📁 Project Structure
-Complaint-Care/ ├── frontend/ # React frontend application │ ├── src/ │ │ ├── components/ │ │ │ ├── admin/ # Admin dashboard components │ │ │ ├── agent/ # Agent panel components │ │ │ ├── user/ # User interface components │ │ │ └── common/ # Shared components │ │ ├── pages/ # Page components │ │ └── utils/ # Utility functions │ ├── public/ # Static assets │ └── package.json ├── backend/ # Express backend application │ ├── models/ # Database models │ ├── routes/ # API routes │ ├── middleware/ # Custom middleware │ ├── config/ # Configuration files │ ├── index.js # Server entry point │ └── package.json └── README.md
